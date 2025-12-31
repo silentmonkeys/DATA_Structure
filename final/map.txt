@@ -1,0 +1,26 @@
+5 7
+Tiananmen TM  Capital
+ForbiddenCity FC  Palace
+SummerPalace SP  Garden
+GreatWall GW  Wall
+OlympicPark OP  Stadium
+1 2 2 
+1 3 5
+2 3 1
+2 4 7
+3 4 3
+3 5 4
+4 5 2
+2
+Query 1 SummerPalace
+Query 2 Tiananmen GreatWall
+
+
+3
+Query 1 SummerPalace
+Modify 1 SummerPalace Summer Palace
+Query 1 SummerPalace
+
+
+景点id:3景点名称：SummerPalace 代号：SP 介绍：Garden
+最短路径: Tiananmen -> ForbiddenCity -> SummerPalace -> GreatWall 距离: 6

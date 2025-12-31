@@ -1,0 +1,19 @@
+3
+1 zhangsan 13800138000 zhangsan@test.com
+2 lisi 13900139000 lisi@test.com
+3 wangwu 13700137000 wangwu@test.com
+7
+查询
+lisi
+查询
+zhaoliu
+修改 
+zhangsan 电话 13811138111
+打印
+删除
+wangwu
+添加 
+2
+4 zhaoliu 13600136000 zhaoliu@test.com
+5 chenqi 13500135000 chenqi@test.com
+打印
