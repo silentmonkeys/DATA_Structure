@@ -11,9 +11,9 @@ typedef struct
     int x;
     int y;
     char d[10];
-} Corr;
+} Data;
 
-typedef Corr SElemType;
+typedef Data SElemType;
 
 typedef struct
 {
@@ -28,13 +28,6 @@ typedef struct
     SElemType *top;
     int stacksize;
 } SqStack;
-typedef struct
-{
-    SElemType *base;
-    int front;
-    int rear;
-} SqQueue;
-
 
 // 构建迷宫
 void CreateUDN(Graph &G)
@@ -187,48 +180,195 @@ void DFS(Graph &G)
             printf("(%d %d %s)", temp.x, temp.y, temp.d);
         }
     }
+    else
+    {
+        cout << "没有找到路径" << endl;
+    }
 }
+
+typedef Data QElemType;
+
+typedef struct QNode
+{
+    QElemType data;
+    struct QNode *next;
+} QNode, *QueuePtr;
 
 typedef struct
 {
-    SElemType *base;
-    int front;
-    int rear;
-} SqQueue;
+    QueuePtr front;
+    QueuePtr rear;
+} LinkQune;
 
 // 初始化
-void InitQueue(SqQueue &Q)
+void InitQuenue(LinkQune &Q)
 {
-    Q.base = new SElemType[MAXSIZE];
-    if (!Q.base)
-        return;
-    Q.front = Q.rear = 0;
+    Q.front = Q.rear = new QNode;
+    Q.front->next = NULL;
 }
 
 // 入队
-void EnQueue(SqQueue &Q, SElemType e)
+void EnQueue(LinkQune &Q, QElemType e)
 {
-    if ((Q.rear + 1) % MAXSIZE == Q.front)
-        return;
-    Q.base[Q.rear] = e;
-    Q.rear = (Q.rear + 1) % MAXSIZE;
+    QueuePtr p = new QNode;
+    p->data = e;
+    p->next = NULL;
+    Q.rear->next = p;
+    Q.rear = p;
 }
+
 // 出队
-void DeQueue(SqQueue &Q, SElemType &e)
+void DeQueue(LinkQune &Q, QElemType &e)
 {
-    if (Q.rear == Q.front)
+    if (Q.front == Q.rear)
         return;
-    e = Q.base[Q.front];
-    Q.front = (Q.front + 1) % MAXSIZE;
+    QueuePtr p = Q.front->next;
+    e = p->data;
+    Q.front->next = p->next;
+    if (Q.rear == p)
+        Q.rear = Q.front;
+    delete p;
 }
+// 队长
+int QueueLen(LinkQune Q)
+{
+    int len = 0;
+    QueuePtr p = Q.front->next;
+    while (p)
+    {
+        ++len;
+        p = p->next;
+    }
+    return len;
+}
+
 // 广度优先
 void BFS(Graph &G)
 {
+    int px[MAXSIZE][MAXSIZE];
+    int py[MAXSIZE][MAXSIZE];
 
+    for (int i = 0; i < G.m; ++i)
+        for (int j = 0; j < G.n; ++j)
+        {
+            G.visited[i][j] = false;
+            px[i][j] = -1;
+            py[i][j] = -1;
+        }
+
+    LinkQune Q;
+    InitQuenue(Q);
+
+    SElemType temp;
+    temp = {0, 0, ""};
+    EnQueue(Q, temp);
+    G.visited[0][0] = true;
+
+    bool found = false;
+    while (QueueLen(Q) > 0)
+    {
+        SElemType next;
+        DeQueue(Q, temp);
+
+        if (temp.x == G.m - 1 && temp.y == G.n - 1)
+        {
+            found = true;
+            break;
+        }
+
+        if (temp.y - 1 >= 0 && G.arcs[temp.x][temp.y - 1] == 0 && !G.visited[temp.x][temp.y - 1])
+        {
+
+            next = {temp.x, temp.y - 1, ""};
+            G.visited[next.x][next.y] = true;
+            px[next.x][next.y] = temp.x;
+            py[next.x][next.y] = temp.y;
+            EnQueue(Q, next);
+        }
+        if (temp.y + 1 < G.n && G.arcs[temp.x][temp.y + 1] == 0 && !G.visited[temp.x][temp.y + 1])
+        {
+            next = {temp.x, temp.y + 1, ""};
+            G.visited[next.x][next.y] = true;
+            px[next.x][next.y] = temp.x;
+            py[next.x][next.y] = temp.y;
+            EnQueue(Q, next);
+        }
+        if (temp.x + 1 < G.m && G.arcs[temp.x + 1][temp.y] == 0 && !G.visited[temp.x + 1][temp.y])
+        {
+            next = {temp.x + 1, temp.y, ""};
+            G.visited[next.x][next.y] = true;
+            px[next.x][next.y] = temp.x;
+            py[next.x][next.y] = temp.y;
+            EnQueue(Q, next);
+        }
+        if (temp.x - 1 >= 0 && G.arcs[temp.x - 1][temp.y] == 0 && !G.visited[temp.x - 1][temp.y])
+        {
+            next = {temp.x - 1, temp.y, ""};
+            G.visited[next.x][next.y] = true;
+            px[next.x][next.y] = temp.x;
+            py[next.x][next.y] = temp.y;
+            EnQueue(Q, next);
+        }
+    }
+
+    if (found)
+    {
+        int x = G.m - 1;
+        int y = G.n - 1;
+
+        SqStack S;
+        InitStack(S);
+        while (x >= 0 && y >= 0)
+        {
+            int nx = px[x][y];
+            int ny = py[x][y];
+
+            if (nx < 0 && ny < 0)
+            {
+                break;
+            }
+
+            if (nx - x == -1 && ny - y == 0)
+            {
+                temp = {nx, ny, "DOWN"};
+                Push(S, temp);
+            }
+            if (nx - x == 1 && ny - y == 0)
+            {
+                temp = {nx, ny, "UP"};
+                Push(S, temp);
+            }
+            if (nx - x == 0 && ny - y == 1)
+            {
+                temp = {nx, ny, "LEFT"};
+                Push(S, temp);
+            }
+            if (nx - x == 0 && ny - y == -1)
+            {
+                temp = {nx, ny, "RIGHT"};
+                Push(S, temp);
+            }
+
+            x = nx;
+            y = ny;
+        }
+
+        while (!Empty(S))
+        {
+            Pop(S, temp);
+            printf("(%d %d %s)", temp.x, temp.y, temp.d);
+        }
+        printf("(%d %d )", G.m-1,G.n-1);
+    }
 }
+
 int main()
 {
     Graph G;
     CreateUDN(G);
+    cout << "深度遍历" << endl;
     DFS(G);
+    cout << endl;
+    cout << "广度遍历" << endl;
+    BFS(G);
 }
