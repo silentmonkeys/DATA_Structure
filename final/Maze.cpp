@@ -360,6 +360,10 @@ void BFS(Graph &G)
         }
         printf("(%d %d )", G.m-1,G.n-1);
     }
+    else
+    {
+        cout << "没有找到路径" << endl;
+    }
 }
 
 int main()
