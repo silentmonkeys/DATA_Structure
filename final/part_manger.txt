@@ -1,5 +1,5 @@
 3
-9
+5
 arrive a1 1
 arrive a2 2
 arrive a3 3
@@ -24,3 +24,14 @@ leave X 20
 arrive G 21
 arrive H 22
 arrive I 23
+
+使用：
+    栈的大小
+    操作次数
+    （指令）*操作次数
+
+指令：
+    arrive 编号 时间
+    leave 编号 时间
+
+所有的时间必须是升序
