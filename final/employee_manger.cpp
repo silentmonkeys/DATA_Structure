@@ -98,21 +98,7 @@ void Del(LinkList &L, char name[])
     q->next = p->next;
     delete p;
 }
-//  Õ∑≈ƒ⁄¥Ê
-void Del_all(LinkList &L)
-{
-    if (L == NULL)
-        return;
-    LinkList p, q;
-    p = L->next;
-    while (p != NULL)
-    {
-        q = p->next;
-        delete p;
-        p = q;
-    }
-    L->next = NULL;
-}
+
 // ¥Ú”°
 void Print_all(LinkList L)
 {
@@ -166,6 +152,5 @@ int main()
         }
     }
 
-    Del_all(L);
     return 0;
 }
